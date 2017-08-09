@@ -217,6 +217,7 @@ var Mantis = {
 		Tags : "tags",
 		UserName : "username",
 		IssueAttachmentID : "issue_attachment_id",
+		Config: "config_var",
 	},
 
 	RemoveNullCustomFieldsFromIssue : function(issue) {
@@ -250,6 +251,28 @@ var Mantis = {
 				var pl = new SOAPClientParameters();
 				pl.add(Mantis.Params.UserName, Kanban.CurrentUser.UserName);
 				pl.add(Mantis.Params.Password, Kanban.CurrentUser.Password);
+				return pl;
+			},
+		},
+		
+		GetConfig : {
+			Name: "mc_config_get_string",
+			BuildParams : function(config) {
+				var pl = new SOAPClientParameters();
+				pl.add(Mantis.Params.UserName, Kanban.CurrentUser.UserName);
+				pl.add(Mantis.Params.Password, Kanban.CurrentUser.Password);
+				pl.add(Mantis.Params.Config, config);
+				return pl;
+			},
+		},
+		
+		GetWorkflow : {
+			Name: "mc_project_get_workflow",
+			BuildParams : function(projectid) {
+				var pl = new SOAPClientParameters();
+				pl.add(Mantis.Params.UserName, Kanban.CurrentUser.UserName);
+				pl.add(Mantis.Params.Password, Kanban.CurrentUser.Password);
+				pl.add(Mantis.Params.ProjectID, projectid);
 				return pl;
 			},
 		},
@@ -753,7 +776,7 @@ var Mantis = {
 		return SOAPClient.invoke(Mantis.ConnectURL,  Mantis.Methods.Login.Name, Mantis.Methods.Login.BuildParams(UserName, Password), false, null);
 	},
 	
-	ProjectGetCategories :  function(callBack){
+	ProjectGetCategories : function(callBack) {
 		hascallback = callBack == null ? false : true;
 		return SOAPClient.invoke(Mantis.ConnectURL,  Mantis.Methods.ProjectGetCategories.Name, Mantis.Methods.ProjectGetCategories.BuildParams(Mantis.CurrentProjectID), hascallback, callBack);
 	},
@@ -812,6 +835,16 @@ var Mantis = {
 	EnumStatus : function(callBack) {
 		hascallback = callBack == null ? false : true;
 		return SOAPClient.invoke(Mantis.ConnectURL,  Mantis.Methods.EnumStatus.Name, Mantis.Methods.EnumStatus.BuildParams(), hascallback, callBack);
+	},
+	
+	GetConfig : function(Config, callBack) {
+		hascallback = callBack == null ? false : true;
+		return SOAPClient.invoke(Mantis.ConnectURL,  Mantis.Methods.GetConfig.Name, Mantis.Methods.GetConfig.BuildParams(Config), hascallback, callBack);
+	},
+	
+	GetWorkflow : function(ProjectID, callBack) {
+		hascallback = callBack == null ? false : true;
+		return SOAPClient.invoke(Mantis.ConnectURL,  Mantis.Methods.GetWorkflow.Name, Mantis.Methods.GetWorkflow.BuildParams(ProjectID), hascallback, callBack);
 	},
 	
 	Version : function(callBack) {

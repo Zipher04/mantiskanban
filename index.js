@@ -156,7 +156,12 @@ function Login() {
 	log("Login() called.");
 	
 	document.getElementById("username").focus();
-	Mantis.ConnectURL = document.getElementById("mantisURL").value;
+	
+	if ( "" == document.getElementById("mantisURL").value ) {
+		document.getElementById("mantisURL").value = Mantis.ConnectURL;
+	} else {
+		Mantis.ConnectURL = document.getElementById("mantisURL").value;
+	}
 	
 	try {
 		var retObj = Mantis.Login(document.getElementById("username").value, document.getElementById("password").value);
@@ -570,10 +575,14 @@ function BuildKanbanListFromMantisStatuses() {
 			}
 		}
 	}
+	
+	var projectStatuses = Mantis.GetWorkflow( Mantis.CurrentProjectID );
 	if(!Kanban.UsingCustomField) {
 		for(var si = 0; si < Mantis.Statuses.length; si++) {
-			var status = Mantis.Statuses[si]
-			Kanban.AddListToArray(new KanbanList(status));
+			var status = Mantis.Statuses[si];
+			if ( projectStatuses[si] != null ) {
+				Kanban.AddListToArray(new KanbanList(status));
+			}
 		}
 	}
 }
